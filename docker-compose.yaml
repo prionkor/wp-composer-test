@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  # Database
+  clearlaw-mysql1:
+    image: mysql:8
+    volumes:
+      - database:/var/lib/mysql
+    restart: on-failure
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    networks:
+      - clearlaw
+  # Wordpress
+  clearlaw-wp1:
+    container_name: clearlaw-wp1
+    build:
+      context: .
+    depends_on:
+      - clearlaw-mysql
+    image: wordpress:latest
+    ports:
+      - 10002:80
+    restart: unless-stopped
+    # volumes:
+      # - /var/www/html/vendor
+      # - .:/var/www/html
+      # - ./wp-content:/var/www/html/wp-content
+      # - ./wp-config.php:/var/www/html/wp-config.php
+      # - ./.htaccess:/var/www/html/.htaccess
+    environment:
+      # WORDPRESS_DB_HOST: clarlaw-mysql:3306
+      # WORDPRESS_DB_USER: wordpress
+      # WORDPRESS_DB_PASSWORD: wordpress
+      CLI_MULTISITE_DEBUG: 1
+      CLI_MULTISITE_DEBUG_DISPLAY: 1
+      CLI_MULTISITE_DB_HOST: clarlaw-mysql:3306
+      CLI_MULTISITE_DB_NAME: wordpress
+      CLI_MULTISITE_DB_USER: wordpress
+      CLI_MULTISITE_DB_PASSWORD: wordpress
+    networks:
+      - clearlaw
+  clearlaw-adminer1:
+    image: adminer
+    ports:
+      - 10003:8080
+    restart: unless-stopped
+    networks:
+      - clearlaw
+networks:
+  clearlaw:
+volumes:
+  database:

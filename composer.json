@@ -1,0 +1,10 @@
+{
+  "config": {
+    "vendor-dir": "vendor"
+  },
+  "require": {
+    "vlucas/phpdotenv": "^v2.6.7",
+    "dompdf/dompdf": "^1.0"
+  }
+}
+
